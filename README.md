@@ -107,7 +107,7 @@ style('&__placeholder') // input__placeholder
 ```
 
 ##`style.modifier`
-Adds new modifier. Unfortunately loader can't extract modifiers from css as booleans only. But often you need to set modifier as string. This method provides you this option.
+Adds new modifier. Unfortunately loader can extract modifiers from css as booleans only. But often you need to set modifier as string. This method provides you this option.
 
 Example: 
 ```js
