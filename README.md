@@ -158,5 +158,4 @@ Rendering `Button` with different props:
 <Button /> //button button--default
 <Button type='success' /> //button button--success
 <Button type='success' disabled /> //button button--success is-disabled
-
 ```

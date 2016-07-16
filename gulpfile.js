@@ -2,7 +2,6 @@ var gulp = require('gulp');
 var gutil = require('gutil');
 var webpack = require('webpack');
 var nodemon = require('gulp-nodemon');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var statsConfig = {
   colors: true,
