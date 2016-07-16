@@ -1,0 +1,22 @@
+.button {
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #FF373A;
+  border: 2px solid darken(#FF373A, 20%);
+
+  &__inner {
+    font-size: 16px;
+  }
+
+  &--success {
+    background-color: #34CB12;
+    border-color: darken(#34CB12, 20%);
+  }
+
+  &.is-disabled {
+    opacity: .5;
+    cursor: default;
+  }
+
+}

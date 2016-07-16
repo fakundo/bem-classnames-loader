@@ -1,0 +1,16 @@
+.button {
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #FF373A;
+  border: 2px solid #d00003; }
+  .button__inner {
+    font-size: 16px; }
+  .button--success {
+    background-color: #34CB12;
+    border-color: #1c6d0a; }
+  .button.is-disabled {
+    opacity: .5;
+    cursor: default; }
+
+/*# sourceMappingURL=index.css.map*/

@@ -1,0 +1,47 @@
+{
+  "name": "bem-classnames-loader",
+  "version": "1.0.0",
+  "description": "Use BEM class names defined in your css files",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "gulp examples:dist && mocha",
+    "prepublish": "npm run test"
+  },
+  "keywords": [
+    "webpack",
+    "loader",
+    "bem",
+    "classnames",
+    "css-modules"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fakundo/bem-classnames-loader"
+  },
+  "author": "Roman Samoylov (https://github.com/fakundo)",
+  "license": "MIT",
+  "peerDependencies": {
+    "bem-classnames": "^1.0.7"
+  },
+  "dependencies": {
+    "loader-utils": "^0.2.15",
+    "webpack": "^1.13.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "gulp": "^3.9.1",
+    "gulp-nodemon": "^2.1.0",
+    "gutil": "^1.6.4",
+    "html-webpack-plugin": "^2.22.0",
+    "mocha": "^2.5.3",
+    "moment": "^2.14.1",
+    "node-sass": "^3.8.0",
+    "sass-loader": "^4.0.0",
+    "style-loader": "^0.13.1"
+  }
+}
