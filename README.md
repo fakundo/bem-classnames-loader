@@ -50,7 +50,9 @@ webpack.config.js
 ```js
 ...
 bemClassnames: {
-  // Loader options
+  prefixes: {
+    state: 'is-'
+  }
 },
 module: {
   loaders: [
@@ -105,7 +107,7 @@ style('&__placeholder') // input__placeholder
 ```
 
 ##`style.modifier`
-Adds new modifier. Unfortunately loader can extract modifiers from css as booleans only. But often you need to set modifier as string. This method provides you this option.
+Adds new modifier. Unfortunately loader can't extract modifiers from css as booleans only. But often you need to set modifier as string. This method provides you this option.
 
 Example: 
 ```js
@@ -148,7 +150,9 @@ export default class Button extends Component {
 };
 ```
 
-This example shows how easy you can use props for generating class names. Rendering `Button` with different props:
+This example shows how easy you can use props for generating class names. 
+
+Rendering `Button` with different props:
 
 ```js
 <Button /> //button button--default
