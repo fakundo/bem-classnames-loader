@@ -20,13 +20,6 @@ module.exports = {
       filename: 'index.html'
     })
   ],
-  resolve: {
-    alias: {
-      'bem-classnames-loader': path.join(__dirname)
-    }
-  },
-  bemClassnames: {
-  },
   module: {
     loaders: [
       {
