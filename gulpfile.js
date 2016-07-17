@@ -8,7 +8,8 @@ var statsConfig = {
   chunks: false,
   modules: false,
   hash: false,
-  version: false
+  version: false,
+  children: false
 };
 
 gulp.task('examples:dist', function(cb) {
