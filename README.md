@@ -1,6 +1,6 @@
 #bem-classnames-loader for webpack
 
-[![npm](https://img.shields.io/npm/v/bem-classnames-loader.svg?maxAge=1592000)](https://www.npmjs.com/package/bem-classnames-loader)
+[![npm](https://img.shields.io/npm/v/bem-classnames-loader.svg?maxAge=2592000)](https://www.npmjs.com/package/bem-classnames-loader)
 
 This loader extracts modifiers and states defined in your css files and then provide an interface for generating class names. So you get hybrid of css-modules and BEM.
 
