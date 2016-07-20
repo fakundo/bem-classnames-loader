@@ -91,9 +91,12 @@ import style from './button.scss';
 ```
 ##`style` 
 Itself is a function, which generates class names in cool way. It's based on [bem-classnames](https://github.com/pocotan001/bem-classnames).
+```
+##`style.getNames` 
+Returns defined names.
 
 ##`style.ns` 
-Sets namespace. Sometimes block name is very large, namespaces help you to write lesser code.
+Get/set namespace. Sometimes block name is very large, namespaces help you to write lesser code.
 
 Example:
 ```js

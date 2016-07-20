@@ -116,7 +116,7 @@
 	      // has inner class (eg. a__b)
 	      if (!namespace) {
 	        var elementMatch = name.match(elementRegexp);
-	        if (elementMatch && bemNamesAssoc[elementMatch[1]]) {
+	        if (elementMatch && (!namespace || bemNamesAssoc[elementMatch[1]])) {
 	          namespace = elementMatch[1];
 	        }
 	      }
@@ -154,6 +154,11 @@
 	      item.modifiers = [];
 	    }
 	    item.modifiers.push(modifier);
+	  };
+	
+	  // Return names
+	  inst.getNames = function() {
+	    return bemNames;
 	  };
 	
 	  return inst;
