@@ -1,6 +1,6 @@
 {
   "name": "bem-classnames-loader",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Use BEM class names defined in your css files",
   "main": "lib/index.js",
   "scripts": {

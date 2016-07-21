@@ -91,7 +91,7 @@ import style from './button.scss';
 ```
 ##`style` 
 Itself is a function, which generates class names in cool way. It's based on [bem-classnames](https://github.com/pocotan001/bem-classnames).
-```
+
 ##`style.getNames` 
 Returns defined names.
 
