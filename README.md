@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/bem-classnames-loader.svg?maxAge=2592000)](https://www.npmjs.com/package/bem-classnames-loader)
 
-This loader extracts modifiers and states defined in your css files and then provide an interface for generating class names. So you get hybrid of css-modules and BEM.
+This loader extracts modifiers and states defined in your css files and then provide an interface for generating class names. So you get a something similar with css-modules but with BEM.
 
 ##Installation
 ```
@@ -38,17 +38,19 @@ button.js
 import style from './button.scss';
 
 style('button') // button
-style('&__inner') // button__inner
-style('button__inner') // button__inner
 style('button', { disabled: true }) // button is-disabled
 style('button', { disabled: true, success: true }) // button button--success is-disabled
 style('button', { disabled: true }, 'form__button') // button is-disabled form__button
 style('button', { disabled: true }, { success: true }, 'form__button') // button button--success is-disabled form__button
+style('&') // button
+style('&inner') // button__inner
+style('button__inner') // button__inner
 ```
 
 webpack.config.js
 ```js
 ...
+// Optional parameters
 bemClassnames: {
   prefixes: {
     state: 'is-'
@@ -60,12 +62,55 @@ module: {
       test: /\.scss$/,
       loader: 'bem-classnames!style!css!sass'
 
-      // If you use extract-text-plugin
+      // If you using extract-text-plugin
       // loaders: ['bem-classnames', ExtractTextPlugin.extract('css!sass')]
     }
   ]
 }
 ...
+```
+
+##React component example
+This example shows how easy you can use props to generate class names. 
+
+```js
+import React, { Component } from 'react';
+import style from './button.scss';
+
+// Add new modifier
+// For example, for using this definition { type: 'success' }, not only { success: true }
+style.modifier('button', 'type');
+
+export default class Button extends Component {
+    
+  static propTypes = {
+    disabled: React.PropTypes.bool,
+    type: React.PropTypes.oneOf([ 'success', 'default' ]);
+  };
+
+  static defaultProps = {
+    type: 'default'
+  };
+
+  render() {
+    return (
+      <button className={style('button', this.props)}>
+        <div className={style('&inner')}>
+          Click me
+        </div>
+      </button>
+    );
+  }
+  
+};
+```
+
+Now render `Button` with different props:
+
+```js
+<Button /> //button button--default
+<Button type='success' /> //button button--success
+<Button type='success' disabled /> //button button--success is-disabled
 ```
 
 ##Loader options
@@ -84,7 +129,6 @@ module: {
 - `prefixes` - define bem entity prefixes
 - `applyClassPrefix` - prefix will be added to class names. For example, you use `postcss-loader` and it's `postcss-class-prefix` plugin to add prefixes in your css. So you should use `applyClassPrefix` to add prefixes on Javascript side.
 
-
 ##API 
 ```js
 import style from './button.scss';
@@ -92,21 +136,19 @@ import style from './button.scss';
 ##`style` 
 Itself is a function, which generates class names in cool way. It's based on [bem-classnames](https://github.com/pocotan001/bem-classnames).
 
-##`style.getNames` 
-Returns defined names.
-
 ##`style.ns` 
-Get/set namespace. Sometimes block name is very large, namespaces help you to write lesser code.
+Get/set namespace. Sometimes class name is very large, namespaces help you to write lesser code.
 
 Example:
 ```js
 style('&') // button
-style('&__inner') // button__inner
+style('&inner') // button__inner
 
-// Set namespace
-style.ns('input');
+// Set new namespace if you need
+style.ns('super-good-component');
 
-style('&__placeholder') // input__placeholder
+style('&') // super-good-component
+style('&placeholder') // super-good-component__placeholder
 ```
 
 ##`style.modifier`
@@ -121,44 +163,5 @@ style('button', { type: 'success' }) // button button--success
 style('button', { type: 'success', disabled: true }) // button button--success is-disabled
 ```
 
-React component example:
-```js
-import React, { Component } from 'react';
-import style from './button.scss';
-
-// Add modifier
-style.modifier('button', 'type');
-
-export default class Button extends Component {
-    
-  static propTypes = {
-    disabled: React.PropTypes.bool,
-    type: React.PropTypes.oneOf([ 'success', 'default' ]);
-  };
-
-  static defaultProps = {
-    type: 'default'
-  };
-
-  render() {
-    return (
-      <button className={style('button', this.props)}>
-        <div className={style('&__inner')}>
-          Click me
-        </div>
-      </button>
-    );
-  }
-  
-};
-```
-
-This example shows how easy you can use props for generating class names. 
-
-Rendering `Button` with different props:
-
-```js
-<Button /> //button button--default
-<Button type='success' /> //button button--success
-<Button type='success' disabled /> //button button--success is-disabled
-```
+##`style.getNames` 
+Returns defined names.

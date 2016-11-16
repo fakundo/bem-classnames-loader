@@ -1,6 +1,8 @@
 // Require style
 var style = require('./index.scss');
 
+console.log(style.ns())
+
 // Test in browser
 if (typeof window !== 'undefined') {
   var button = document.createElement('button');
@@ -10,7 +12,7 @@ if (typeof window !== 'undefined') {
 
   // Magic here
   button.className = style('button');
-  buttonInner.className = style('&__inner'); // Takes namespace as &
+  buttonInner.className = style('&inner'); // Takes namespace as &
   button.onclick = function() {
     this.className = style('button', { disabled: true, success: true });
   };

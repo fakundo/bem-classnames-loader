@@ -22,20 +22,21 @@ describe('examples', function() {
   });
 
   it('with modifier', function() {
-    assert.equal(global.style('button', { success: true }), 'button button--success');
+    assert.equal(global.style('button', { success: true }), 'button--success button');
   });
 
   it('with state', function() {
-    assert.equal(global.style('button', { disabled: true }), 'button is-disabled');
+    assert.equal(global.style('button', { disabled: true }), 'is-disabled button');
   });
 
   it('namespace', function() {
-    assert.equal(global.style('&__inner'), 'button__inner');
+    assert.equal(global.style('&'), 'button');
+    assert.equal(global.style('&inner'), 'button__inner');
   });
 
   it('add modifier', function() {
     global.style.modifier('button', 'type');
-    assert.equal(global.style('button', { type: 'success' }), 'button button--success');
+    assert.equal(global.style('button', { type: 'success' }), 'button--success button');
   });
 
   it('plus other classname', function() {

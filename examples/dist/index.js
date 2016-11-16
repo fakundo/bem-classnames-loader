@@ -47,6 +47,8 @@
 	/* WEBPACK VAR INJECTION */(function(global) {// Require style
 	var style = __webpack_require__(1);
 	
+	console.log(style.ns())
+	
 	// Test in browser
 	if (typeof window !== 'undefined') {
 	  var button = document.createElement('button');
@@ -56,7 +58,7 @@
 	
 	  // Magic here
 	  button.className = style('button');
-	  buttonInner.className = style('&__inner'); // Takes namespace as &
+	  buttonInner.className = style('&inner'); // Takes namespace as &
 	  button.onclick = function() {
 	    this.className = style('button', { disabled: true, success: true });
 	  };
@@ -78,8 +80,9 @@
 	// Result of previous loaders, e.g. style-loader
 	var old = __webpack_require__(2);
 	var cx = __webpack_require__(4);
-	var bemNames = [{"name":"button","modifiers":["success"],"states":["disabled"]},{"name":"button__inner"}];
-	module.exports = cx(bemNames);
+	var bemNames = {"button":{"modifiers":["success"],"states":["disabled"]},"button__inner":{}};
+	var bemNamespace = "button";
+	module.exports = cx(bemNames, bemNamespace);
 
 /***/ },
 /* 2 */
@@ -96,32 +99,12 @@
 	// This variable must be set by cx.loader.js
 	var options;
 	
-	module.exports = function(bemNames) {
+	module.exports = function(bemNames, bemNamespace) {
 	
-	  // Convert back to object
-	  var bemNamesAssoc = {};
-	  for (var i = 0; i < bemNames.length; i++) {
-	    var item = bemNames[i];
-	    bemNamesAssoc[item.name] = item;
-	  }
-	
-	  // Find possible namespace
-	  // and apply class prefix if represented
-	  // in one loop
-	  var namespace = '';
-	  var elementRegexp = new RegExp('^(.+?)' + options.prefixes.element);
-	  for (var name in bemNamesAssoc) {
-	    if (bemNamesAssoc.hasOwnProperty(name)) {
-	      // Simple criteria for finding ns:
-	      // has inner class (eg. a__b)
-	      if (!namespace) {
-	        var elementMatch = name.match(elementRegexp);
-	        if (elementMatch && (!namespace || bemNamesAssoc[elementMatch[1]])) {
-	          namespace = elementMatch[1];
-	        }
-	      }
-	      // Apply prefix
-	      bemNamesAssoc[name].name = options.applyClassPrefix + name;
+	  // Add name property and apply class prefix
+	  for (var name in bemNames) {
+	    if (bemNames.hasOwnProperty(name)) {
+	      bemNames[name].name = options.applyClassPrefix + name;
 	    }
 	  }
 	
@@ -129,8 +112,9 @@
 	
 	    if (typeof name === 'string') {
 	      // Namespace usage
-	      name = name.replace(/^&/, namespace);
-	      var obj = bemNamesAssoc[name] || { name: options.applyClassPrefix + name };
+	      name = name.replace(new RegExp('^&(.+)'), bemNamespace + options.prefixes.element + '$1');
+	      name = name.replace(/^&/, bemNamespace);
+	      var obj = bemNames[name] || { name: options.applyClassPrefix + name };
 	      var args = [].slice.call(arguments, 1);
 	      args.unshift(obj);
 	      return cx.apply(null, args);
@@ -142,14 +126,14 @@
 	  // Changes namespace
 	  inst.ns = function(newNamespace) {
 	    if (typeof newNamespace !== 'undefined') {
-	      namespace = newNamespace;
+	      bemNamespace = newNamespace;
 	    }
-	    return namespace;
+	    return bemNamespace;
 	  };
 	
 	  // Adds modifier
 	  inst.modifier = function(name, modifier) {
-	    var item = bemNamesAssoc[name];
+	    var item = bemNames[name];
 	    if (!item.modifiers) {
 	      item.modifiers = [];
 	    }
