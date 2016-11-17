@@ -47,8 +47,6 @@
 	/* WEBPACK VAR INJECTION */(function(global) {// Require style
 	var style = __webpack_require__(1);
 	
-	console.log(style.ns())
-	
 	// Test in browser
 	if (typeof window !== 'undefined') {
 	  var button = document.createElement('button');
@@ -57,7 +55,7 @@
 	  button.appendChild(buttonInner);
 	
 	  // Magic here
-	  button.className = style('button');
+	  button.className = style('button', { hoverEffect: true });
 	  buttonInner.className = style('&inner'); // Takes namespace as &
 	  button.onclick = function() {
 	    this.className = style('button', { disabled: true, success: true });
@@ -80,7 +78,7 @@
 	// Result of previous loaders, e.g. style-loader
 	var old = __webpack_require__(2);
 	var cx = __webpack_require__(4);
-	var bemNames = {"button":{"modifiers":["success"],"states":["disabled"]},"button__inner":{}};
+	var bemNames = {"button":{"modifiers":["success","hoverEffect"],"states":["disabled"]},"button__inner":{}};
 	var bemNamespace = "button";
 	module.exports = cx(bemNames, bemNamespace);
 

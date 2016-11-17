@@ -9,6 +9,8 @@
   .button--success {
     background-color: #34CB12;
     border-color: #1c6d0a; }
+  .button--hoverEffect:hover {
+    background-color: red; }
   .button.is-disabled {
     opacity: .5;
     cursor: default; }
