@@ -76,7 +76,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	// Result of previous loaders, e.g. style-loader
-	var old = __webpack_require__(2);
+	__webpack_require__(2);
 	var cx = __webpack_require__(4);
 	var bemNames = {"button":{"modifiers":["success","hoverEffect"],"states":["disabled"]},"button__inner":{}};
 	var bemNamespace = "button";
