@@ -1,7 +1,7 @@
 {
   "name": "bem-classnames-loader",
   "version": "1.1.3",
-  "description": "Use BEM class names defined in your css files",
+  "description": "Use BEM class names defined in your CSS files",
   "main": "lib/index.js",
   "scripts": {
     "test": "gulp examples:dist && mocha",
