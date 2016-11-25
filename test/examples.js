@@ -3,44 +3,44 @@ var assert = chai.assert;
 
 describe('examples', function() {
 
-  require('../examples/dist');
+  var style = require('../examples/dist');
 
   it('simple class', function() {
-    assert.equal(global.style('button'), 'button');
+    assert.equal(style('button'), 'button');
   });
 
   it('inner class', function() {
-    assert.equal(global.style('button__inner'), 'button__inner');
+    assert.equal(style('button__inner'), 'button__inner');
   });
 
   it('not defined class', function() {
-    assert.equal(global.style('input'), 'input');
+    assert.equal(style('input'), 'input');
   });
 
   it('not defined class, but passed as object', function() {
-    assert.equal(global.style({ name: 'input', states: ['active'] }, { active: true }), 'input is-active');
+    assert.equal(style({ name: 'input', states: ['active'] }, { active: true }), 'input is-active');
   });
 
   it('with modifier', function() {
-    assert.equal(global.style('button', { success: true }), 'button--success button');
+    assert.equal(style('button', { success: true }), 'button--success button');
   });
 
   it('with state', function() {
-    assert.equal(global.style('button', { disabled: true }), 'is-disabled button');
+    assert.equal(style('button', { disabled: true }), 'is-disabled button');
   });
 
   it('namespace', function() {
-    assert.equal(global.style('&'), 'button');
-    assert.equal(global.style('&inner'), 'button__inner');
+    assert.equal(style('&'), 'button');
+    assert.equal(style('&inner'), 'button__inner');
   });
 
   it('add modifier', function() {
-    global.style.modifier('button', 'type');
-    assert.equal(global.style('button', { type: 'success' }), 'button--success button');
+    style.modifier('button', 'type');
+    assert.equal(style('button', { type: 'success' }), 'button--success button');
   });
 
   it('plus other classname', function() {
-    assert.equal(global.style('button', 'form__button'), 'button form__button');
+    assert.equal(style('button', 'form__button'), 'button form__button');
   });
 
 });

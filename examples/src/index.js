@@ -1,24 +1,28 @@
 // Require style
 var style = require('./index.scss');
 
-// Test in browser
+// Watch in browser
 if (typeof window !== 'undefined') {
+  var status = document.createElement('div');
   var button = document.createElement('button');
-  var buttonInner = document.createElement('div')
+  var buttonInner = document.createElement('div');
   buttonInner.innerHTML = 'Click me';
   button.appendChild(buttonInner);
 
   // Magic here
-  button.className = style('button', { hoverEffect: true });
+  button.className = style('button', { default: true });
   buttonInner.className = style('&inner'); // Takes namespace as &
   button.onclick = function() {
     this.className = style('button', { disabled: true, success: true });
+    status.innerHTML = button.className;
   };
 
+  status.style.marginTop = '20px';
+  status.innerHTML = button.className;
+
   document.body.appendChild(button);
+  document.body.appendChild(status);
 }
 
-// Export for mocha tests
-if (typeof global !== 'undefined') {
-  global.style = style;
-}
+// Export style for auto tests
+module.exports = style;

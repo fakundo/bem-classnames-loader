@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -44,43 +54,46 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {// Require style
+	// Require style
 	var style = __webpack_require__(1);
 	
-	// Test in browser
+	// Watch in browser
 	if (typeof window !== 'undefined') {
+	  var status = document.createElement('div');
 	  var button = document.createElement('button');
-	  var buttonInner = document.createElement('div')
+	  var buttonInner = document.createElement('div');
 	  buttonInner.innerHTML = 'Click me';
 	  button.appendChild(buttonInner);
 	
 	  // Magic here
-	  button.className = style('button', { hoverEffect: true });
+	  button.className = style('button', { default: true });
 	  buttonInner.className = style('&inner'); // Takes namespace as &
 	  button.onclick = function() {
 	    this.className = style('button', { disabled: true, success: true });
+	    status.innerHTML = button.className;
 	  };
 	
+	  status.style.marginTop = '20px';
+	  status.innerHTML = button.className;
+	
 	  document.body.appendChild(button);
+	  document.body.appendChild(status);
 	}
 	
-	// Export for mocha tests
-	if (typeof global !== 'undefined') {
-	  global.style = style;
-	}
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+	// Export style for auto tests
+	module.exports = style;
+
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// bem-classnames-loader: extracts bem modifiers and states from CSS files
 	// Result of previous loaders, e.g. style-loader
 	__webpack_require__(2);
 	var cx = __webpack_require__(4);
-	var bemNames = {"button":{"modifiers":["success","hoverEffect"],"states":["disabled"]},"button__inner":{}};
-	var bemNamespace = "button";
-	module.exports = cx(bemNames, bemNamespace);
+	var bem = __webpack_require__(6);
+	module.exports = cx(bem);
 
 /***/ },
 /* 2 */
@@ -93,16 +106,24 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var cx = __webpack_require__(5);
-	// This variable must be set by cx.loader.js
-	var options;
 	
-	module.exports = function(bemNames, bemNamespace) {
+	// BEM options by cxLoader.js
+	var options = {"applyClassPrefix":"","prefixes":{"element":"__","modifier":"--","state":"is-"}};
+	// Options must be provided by cxLoader.js
+	// eslint-disable-next-line no-undef
+	var opts = options;
+	var cx = __webpack_require__(5);
+	cx.prefixes.modifiers = '{name}' + opts.prefixes.modifier;
+	cx.prefixes.states = opts.applyClassPrefix + opts.prefixes.state;
+	
+	module.exports = function(data) {
+	  var bemNames = data.names;
+	  var bemNamespace = data.namespace;
 	
 	  // Add name property and apply class prefix
 	  for (var name in bemNames) {
 	    if (bemNames.hasOwnProperty(name)) {
-	      bemNames[name].name = options.applyClassPrefix + name;
+	      bemNames[name].name = opts.applyClassPrefix + name;
 	    }
 	  }
 	
@@ -110,9 +131,9 @@
 	
 	    if (typeof name === 'string') {
 	      // Namespace usage
-	      name = name.replace(new RegExp('^&(.+)'), bemNamespace + options.prefixes.element + '$1');
+	      name = name.replace(new RegExp('^&(.+)'), bemNamespace + opts.prefixes.element + '$1');
 	      name = name.replace(/^&/, bemNamespace);
-	      var obj = bemNames[name] || { name: options.applyClassPrefix + name };
+	      var obj = bemNames[name] || { name: opts.applyClassPrefix + name };
 	      var args = [].slice.call(arguments, 1);
 	      args.unshift(obj);
 	      return cx.apply(null, args);
@@ -145,11 +166,7 @@
 	
 	  return inst;
 	};
-	
-	// Setting up cx by cx.loader.js
-	options = {"applyClassPrefix":"","prefixes":{"element":"__","modifier":"--","state":"is-"}};
-	cx.prefixes.modifiers = "{name}" + options.prefixes.modifier;
-	cx.prefixes.states = options.applyClassPrefix + options.prefixes.state;
+
 
 /***/ },
 /* 5 */
@@ -330,6 +347,18 @@
 	}));
 
 
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	// BEM names by parserLoader.js
+	module.exports = {
+	 names: {"button":{"modifiers":["default","success"],"states":["disabled"]},"button__inner":{}},
+	 namespace: "button"
+	};
+
 /***/ }
-/******/ ]);
+/******/ ])
+});
+;
 //# sourceMappingURL=index.js.map

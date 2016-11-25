@@ -11,6 +11,7 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: path.join(__dirname, 'dist'),
+    libraryTarget: 'umd',
     publicPath: ''
   },
   plugins: [
