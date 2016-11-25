@@ -50,7 +50,7 @@ style('button__inner') // button__inner
 webpack.config.js
 ```js
 ...
-// Optional parameters
+// Optional parameters (you can pass them with loader query too)
 bemClassnames: {
   prefixes: {
     state: 'is-'
