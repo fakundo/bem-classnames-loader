@@ -14,7 +14,7 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin('index.css'),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'index.html'),
+      template: path.resolve(__dirname, 'src', 'index.html'),
       filename: 'index.html'
     })
   ],
@@ -27,7 +27,6 @@ module.exports = {
           path.resolve(__dirname, '../lib/index.js'),
           ExtractTextPlugin.extract('css!sass')
         ],
-        //query: { bemClassnames: { prefixes: { state: 'IS-' } } }
       }
     ]
   }

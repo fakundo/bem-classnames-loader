@@ -16,14 +16,21 @@ button.scss
 .button {
   color: white;
   cursor: pointer;
-  background-color: #FF373A;
 
   &__inner {
     font-size: 16px;
   }
 
-  &--success {
-    background-color: #34CB12;
+  &--borderless {
+    border: none;
+  }
+
+  &--type-default {
+    background-color: gray;
+  }
+
+  &--type-success {
+    background-color: green;
   }
 
   &.is-disabled {
@@ -39,9 +46,11 @@ import style from './button.scss';
 
 style('button') // button
 style('button', { disabled: true }) // button is-disabled
-style('button', { disabled: true, success: true }) // button button--success is-disabled
+style('button', { borderless: true }) // button button--borderless
+style('button', { disabled: true, type: 'success' }) // button is-disabled button--type-success
 style('button', { disabled: true }, 'form__button') // button is-disabled form__button
-style('button', { disabled: true }, { success: true }, 'form__button') // button button--success is-disabled form__button
+style('button', { disabled: true }, { type: 'default' }, 'form__button') // button is-disabled button--type-default form__button
+
 style('&') // button
 style('&inner') // button__inner
 style('button__inner') // button__inner
@@ -77,14 +86,11 @@ This example shows how easy you can use props to generate class names.
 import React, { Component } from 'react';
 import style from './button.scss';
 
-// Add new modifier
-// For example, for using this definition { type: 'success' }, not only { success: true }
-style.modifier('button', 'type');
-
 export default class Button extends Component {
     
   static propTypes = {
     disabled: React.PropTypes.bool,
+    borderless: React.PropTypes.bool,
     type: React.PropTypes.oneOf([ 'success', 'default' ]);
   };
 
@@ -94,7 +100,7 @@ export default class Button extends Component {
 
   render() {
     return (
-      <button className={style('button', this.props)}>
+      <button className={style('&', this.props)}>
         <div className={style('&inner')}>
           Click me
         </div>
@@ -108,19 +114,23 @@ export default class Button extends Component {
 Now render `Button` with different props:
 
 ```js
-<Button /> //button button--default
-<Button type='success' /> //button button--success
-<Button type='success' disabled /> //button button--success is-disabled
+<Button /> //button button--type-default
+<Button borderless /> //button button--borderless
+<Button type="success" /> //button button--type-success
+<Button type="success" disabled /> //button button--type-success is-disabled
 ```
 
+<a name="loader-options"></a>
 ##Loader options
 
 ```js
 {
   prefixes: {
-    element: '__',  
+    element: '__',
     modifier: '--',
-    state: 'is-'
+    state: 'is-',
+    modifierValue: '-',
+    stateValue: '-'
   },
   applyClassPrefix: ''
 }
@@ -134,7 +144,7 @@ Now render `Button` with different props:
 import style from './button.scss';
 ```
 ##`style` 
-Itself is a function, which generates class names in cool way. It's based on [bem-classnames](https://github.com/pocotan001/bem-classnames).
+Itself is a function, which generates class names in cool way.
 
 ##`style.ns` 
 Get/set namespace. Sometimes class name is very large, namespaces help you to write lesser code.
@@ -152,16 +162,32 @@ style('&placeholder') // super-good-component__placeholder
 ```
 
 ##`style.modifier`
-Adds new modifier. Unfortunately loader can extract modifiers from css as booleans only. But often you need to set modifier as string. This method provides you this option.
+Adds new modifier.
 
 Example: 
 ```js
-// Add modifier
-style.modifier('button', 'type');
+// Add boolean modifier
+style.modifier('button', 'fade');
+style('button', { fade: true }) // button button--fade
 
-style('button', { type: 'success' }) // button button--success
-style('button', { type: 'success', disabled: true }) // button button--success is-disabled
+// Add string modifier
+style.modifier('button', 'size', ['sm', 'lg']);
+style('button', { size: 'sm' }) // button button--size-sm
 ```
 
-##`style.getNames` 
-Returns defined names.
+##`style.state`
+Adds new state.
+
+Example: 
+```js
+// Add boolean state
+style.state('button', 'active');
+style('button', { active: true }) // button is-active
+
+// Add string state
+style.state('button', 'foo', ['bar']);
+style('button', { foo: 'bar' }) // button is-foo-bar
+```
+
+##`style.getClasses` 
+Returns defined classes.

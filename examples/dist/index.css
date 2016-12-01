@@ -1,13 +1,16 @@
 .button {
   color: white;
   cursor: pointer;
-  border-radius: 5px; }
+  border-radius: 5px;
+  border: 2px solid gray; }
   .button__inner {
     font-size: 16px; }
-  .button--default {
+  .button--borderless {
+    border-width: 0; }
+  .button--type-default {
     background-color: #FF373A;
-    border: 2px solid #d00003; }
-  .button--success {
+    border-color: #d00003; }
+  .button--type-success {
     background-color: #34CB12;
     border-color: #1c6d0a; }
   .button.is-disabled {

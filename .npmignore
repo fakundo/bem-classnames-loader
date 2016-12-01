@@ -1,0 +1,8 @@
+.DS_Store
+npm-debug.log
+*.sublime-workspace
+*.sublime-project
+*.editorcondig
+*.eslintrc
+.git
+*.gitignore

@@ -66,10 +66,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  button.appendChild(buttonInner);
 	
 	  // Magic here
-	  button.className = style('button', { default: true });
+	  button.className = style('button', { type: 'default' });
 	  buttonInner.className = style('&inner'); // Takes namespace as &
 	  button.onclick = function() {
-	    this.className = style('button', { disabled: true, success: true });
+	    this.className = style('button', { type: 'success', disabled: true });
 	    status.innerHTML = button.className;
 	  };
 	
@@ -92,7 +92,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// Result of previous loaders, e.g. style-loader
 	__webpack_require__(2);
 	var cx = __webpack_require__(4);
-	var bem = __webpack_require__(6);
+	var bem = __webpack_require__(5);
 	module.exports = cx(bem);
 
 /***/ },
@@ -104,256 +104,202 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 3 */,
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	
 	// BEM options by cxLoader.js
-	var options = {"applyClassPrefix":"","prefixes":{"element":"__","modifier":"--","state":"is-"}};
-	// Options must be provided by cxLoader.js
-	// eslint-disable-next-line no-undef
-	var opts = options;
-	var cx = __webpack_require__(5);
-	cx.prefixes.modifiers = '{name}' + opts.prefixes.modifier;
-	cx.prefixes.states = opts.applyClassPrefix + opts.prefixes.state;
+	var options = {"applyClassPrefix":"","prefixes":{"element":"__","modifier":"--","state":"is-","modifierValue":"-","stateValue":"-"}};
+	// Options must be defined by cxLoader.js
+	/* global options */
 	
-	module.exports = function(data) {
-	  var bemNames = data.names;
-	  var bemNamespace = data.namespace;
+	function compactAndUnique(array) {
+	  return array.filter(function(value, index, self) {
+	    return !!value && self.indexOf(value) === index;
+	  });
+	}
 	
-	  // Add name property and apply class prefix
-	  for (var name in bemNames) {
-	    if (bemNames.hasOwnProperty(name)) {
-	      bemNames[name].name = opts.applyClassPrefix + name;
+	function reduce(obj, iteratee, acc) {
+	  for (var key in obj) {
+	    if (obj.hasOwnProperty(key)) {
+	      acc = iteratee(acc, obj[key], key);
 	    }
 	  }
+	  return acc;
+	}
 	
-	  var inst = function(name) {
+	function inArray(array, item) {
+	  return !!~array.indexOf(item);
+	}
 	
-	    if (typeof name === 'string') {
-	      // Namespace usage
-	      name = name.replace(new RegExp('^&(.+)'), bemNamespace + opts.prefixes.element + '$1');
-	      name = name.replace(/^&/, bemNamespace);
-	      var obj = bemNames[name] || { name: opts.applyClassPrefix + name };
-	      var args = [].slice.call(arguments, 1);
-	      args.unshift(obj);
-	      return cx.apply(null, args);
+	module.exports = function(bem) {
+	
+	  function hasBemNames(className) {
+	    return !!bem.classes[className];
+	  }
+	
+	  function getBemModifier(className, propName) {
+	    var bemClassname = bem.classes[className];
+	    return bemClassname.modifiers && bemClassname.modifiers[propName];
+	  }
+	
+	  function getBemState(className, propName) {
+	    var bemClassname = bem.classes[className];
+	    return bemClassname.states && bemClassname.states[propName];
+	  }
+	
+	  function applyClassPrefix(className) {
+	    return options.applyClassPrefix + className;
+	  }
+	
+	  function canApplyBooleanModifier(className, propName, propValue) {
+	    var bemModifier = getBemModifier(className, propName);
+	    return propValue === true && !!bemModifier;
+	  }
+	
+	  function applyBooleanModifier(className, propName, propValue) {
+	    return canApplyBooleanModifier(className, propName, propValue) ?
+	      applyClassPrefix(className + options.prefixes.modifier + propName) :
+	      '';
+	  }
+	
+	  function canApplyStringModifier(className, propName, propValue) {
+	    var bemModifier = getBemModifier(className, propName);
+	    return !!bemModifier && inArray(bemModifier, propValue);
+	  }
+	
+	  function applyStringModifier(className, propName, propValue) {
+	    return canApplyStringModifier(className, propName, propValue) ?
+	      applyClassPrefix(className + options.prefixes.modifier + propName + options.prefixes.modifierValue + propValue.toString()) :
+	      '';
+	  }
+	
+	  function canApplyBooleanState(className, propName, propValue) {
+	    var bemState = getBemState(className, propName);
+	    return propValue === true && !!bemState;
+	  }
+	
+	  function applyBooleanState(className, propName, propValue) {
+	    return canApplyBooleanState(className, propName, propValue) ?
+	      applyClassPrefix(options.prefixes.state + propName) :
+	      '';
+	  }
+	
+	  function canApplyStringState(className, propName, propValue) {
+	    var bemState = getBemState(className, propName);
+	    return !!bemState && inArray(bemState, propValue);
+	  }
+	
+	  function applyStringState(className, propName, propValue) {
+	    return canApplyStringState(className, propName, propValue) ?
+	      applyClassPrefix(options.prefixes.state + propName + options.prefixes.stateValue + propValue.toString()) :
+	      '';
+	  }
+	
+	  function applyProp(className, propName, propValue) {
+	    var result = [];
+	    if (typeof propValue === 'boolean') {
+	      result.push(applyBooleanModifier(className, propName, propValue));
+	      result.push(applyBooleanState(className, propName, propValue));
+	    }
+	    else {
+	      result.push(applyStringModifier(className, propName, propValue));
+	      result.push(applyStringState(className, propName, propValue));
+	    }
+	    return result;
+	  }
+	
+	  function applyProps(className, props) {
+	    if (hasBemNames(className)) {
+	      return reduce(props, function(acc, propValue, propName) {
+	        return acc.concat(applyProp(className, propName, propValue));
+	      }, []);
+	    }
+	    return [];
+	  }
+	
+	  function applyNamespace(className) {
+	    return className
+	      .replace(new RegExp('^&(.+)'), bem.namespace + options.prefixes.element + '$1')
+	      .replace(/^&/, bem.namespace);
+	  }
+	
+	  function processClassname(className, args) {
+	    className = applyNamespace(className);
+	    return reduce(args, function(acc, arg) {
+	      switch (typeof arg) {
+	        case 'object':
+	          return acc.concat(applyProps(className, arg));
+	        default:
+	          return acc.concat([arg.toString()]);
+	      }
+	    }, [ applyClassPrefix(className) ]);
+	  }
+	
+	  // Main function
+	  function cx(classNames) {
+	    var args = [].slice.call(arguments, 1);
+	
+	    if (typeof classNames === 'string') {
+	      classNames = [classNames];
 	    }
 	
-	    return cx.apply(null, arguments);
-	  };
+	    var result = reduce(classNames, function(acc, className) {
+	      return acc.concat(processClassname(className, args));
+	    }, []);
+	
+	    return compactAndUnique(result).join(' ');
+	  }
 	
 	  // Changes namespace
-	  inst.ns = function(newNamespace) {
+	  cx.ns = function(newNamespace) {
 	    if (typeof newNamespace !== 'undefined') {
-	      bemNamespace = newNamespace;
+	      bem.namespace = newNamespace;
 	    }
-	    return bemNamespace;
+	    return bem.namespace;
 	  };
 	
 	  // Adds modifier
-	  inst.modifier = function(name, modifier) {
-	    var item = bemNames[name];
-	    if (!item.modifiers) {
-	      item.modifiers = [];
+	  cx.modifier = function(className, modifier, values) {
+	    var classItem = cx.class(className);
+	    if (!classItem.modifiers) {
+	      classItem.modifiers = {};
 	    }
-	    item.modifiers.push(modifier);
+	    classItem.modifiers[modifier] = (classItem.modifiers[modifier] || []).concat(values || []);
 	  };
 	
-	  // Return names
-	  inst.getNames = function() {
-	    return bemNames;
+	  // Adds state
+	  cx.state = function(className, state, values) {
+	    var classItem = cx.class(className);
+	    if (!classItem.states) {
+	      classItem.states = {};
+	    }
+	    classItem.states[state] = (classItem.states[state] || []).concat(values || []);
 	  };
 	
-	  return inst;
+	  // Adds class
+	  cx.class = function(className) {
+	    if (!bem.classes[className]) {
+	      bem.classes[className] = {};
+	    }
+	    return bem.classes[className];
+	  };
+	
+	  // Return classes
+	  cx.getClasses = function() {
+	    return bem.classes;
+	  };
+	
+	  return cx;
 	};
 
 
 /***/ },
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function(global, factory) {
-	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)); // AMD
-	  } else if (typeof exports === 'object') {
-	    module.exports = factory(); // CommonJS
-	  } else {
-	    global.cx = factory(); // Globals
-	  }
-	}(this, function() {
-	  'use strict';
-	
-	  var prefixes = {
-	    modifiers: '{name}--',
-	    states: 'is-'
-	  };
-	
-	  var push  = Array.prototype.push;
-	  var slice = Array.prototype.slice;
-	  var toString = Object.prototype.toString;
-	
-	  /**
-	   * toType([]) -> 'array'
-	   *
-	   * @param {*} object
-	   * @return {string}
-	   */
-	  function toType(object) {
-	    return toString.call(object).slice(8, -1).toLowerCase();
-	  }
-	
-	  /**
-	   * is.array([]) -> true
-	   *
-	   * @param {*} object
-	   * @return {string}
-	   */
-	  var is = {};
-	  ['string', 'boolean', 'array', 'object'].forEach(function(type) {
-	    is[type] = function(object) {
-	      return toType(object) === type;
-	    };
-	  });
-	
-	  /**
-	   * uniq(['a', 'b', 'a', 'b']) -> ['a', 'b']
-	   *
-	   * @param {Array} array
-	   * @return {Array}
-	   */
-	  function uniq(array) {
-	    return array.filter(function(el, i) {
-	      return array.indexOf(el) === i;
-	    });
-	  }
-	
-	  /**
-	   * exclude([null, undefined, 1, 0, true, false, '', 'a', ' b  ']) -> ['a', 'b']
-	   *
-	   * @param {Array} array
-	   * @return {string[]}
-	   */
-	  function exclude(array) {
-	    return array
-	      .filter(function(el) {
-	        return is.string(el) && el.trim() !== '';
-	      })
-	      .map(function(className) {
-	        return className.trim();
-	      });
-	  }
-	
-	  /**
-	   * split(' a  b  ') -> ['a', 'b']
-	   *
-	   * @param {string} className
-	   * @return {string[]}
-	   */
-	  function split(className) {
-	    return className.trim().split(/ +/);
-	  }
-	
-	  /**
-	   * toClassName(['a', 'b']) -> 'a b'
-	   *
-	   * @param {string[]} names
-	   * @return {string}
-	   */
-	  function toClassName(names) {
-	    return names.join(' ').trim();
-	  }
-	
-	  /**
-	   * detectPrefix('modifiers', { name: 'foo' }) -> 'foo--'
-	   *
-	   * @param {string} prefixName
-	   * @param {Object} classes
-	   * @return {string}
-	   */
-	  function detectPrefix(prefixName, classes) {
-	    return (prefixes[prefixName] || '').replace(/\{([\w-]*?)\}/g, function (match, p1) {
-	      return classes[p1] || '';
-	    });
-	  }
-	
-	  /**
-	   * getClassNamesByProps(['a'], { a: 'foo' }, '-') -> [ '-foo' ]
-	   *
-	   * @param {string[]} propNames
-	   * @param {Object} props
-	   * @param {string} [prefix]
-	   * @return {string[]}
-	   */
-	  function getClassNamesByProps(propNames, props, prefix) {
-	    prefix = prefix || '';
-	
-	    return propNames
-	      .filter(function(name) {
-	        return !!props[name];
-	      })
-	      .map(function(name) {
-	        return prefix + (is.boolean(props[name]) ? name : props[name]);
-	      });
-	  }
-	
-	  /**
-	   * @param {Object} classes
-	   * @param {...Object|string} [props|className]
-	   * @return {string}
-	   */
-	  function cx(classes/* , [...props|className] */) {
-	    if (!classes) {
-	      return '';
-	    }
-	
-	    var args = slice.call(arguments).slice(1);
-	    var classNames = [];
-	
-	    Object.keys(classes).forEach(function(name) {
-	      switch (toType(classes[name])) {
-	        case 'string':
-	          push.apply(classNames, split(classes[name]));
-	          break;
-	        case 'array':
-	          args.forEach(function (arg) {
-	            if (is.object(arg)) {
-	              var names = getClassNamesByProps(classes[name], arg, detectPrefix(name, classes));
-	              push.apply(classNames, names);
-	            }
-	          });
-	          break;
-	        default:
-	      }
-	    });
-	
-	    args.forEach(function (arg) {
-	      switch (toType(arg)) {
-	        case 'string':
-	          push.apply(classNames, split(arg));
-	          break;
-	        case 'array':
-	          push.apply(classNames, arg);
-	          break;
-	        default:
-	      }
-	    });
-	
-	    return toClassName(exclude(uniq(classNames)));
-	  }
-	
-	  cx.prefixes = prefixes;
-	
-	  return cx;
-	}));
-
-
-/***/ },
-/* 6 */
 /***/ function(module, exports) {
 
-	// BEM names by parserLoader.js
+	// BEM classnames by parserLoader.js
 	module.exports = {
-	 names: {"button":{"modifiers":["default","success"],"states":["disabled"]},"button__inner":{}},
+	 classes: {"button":{"modifiers":{"borderless":[],"type":["default","success"]},"states":{"disabled":[]}},"button__inner":{}},
 	 namespace: "button"
 	};
 

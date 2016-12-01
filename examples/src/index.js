@@ -10,10 +10,10 @@ if (typeof window !== 'undefined') {
   button.appendChild(buttonInner);
 
   // Magic here
-  button.className = style('button', { default: true });
+  button.className = style('button', { type: 'default' });
   buttonInner.className = style('&inner'); // Takes namespace as &
   button.onclick = function() {
-    this.className = style('button', { disabled: true, success: true });
+    this.className = style('button', { type: 'success', disabled: true });
     status.innerHTML = button.className;
   };
 
