@@ -83,15 +83,15 @@ module: {
 This example shows how easy you can use props to generate class names. 
 
 ```js
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import style from './button.scss';
 
 export default class Button extends Component {
     
   static propTypes = {
-    disabled: React.PropTypes.bool,
-    borderless: React.PropTypes.bool,
-    type: React.PropTypes.oneOf([ 'success', 'default' ]);
+    disabled: PropTypes.bool,
+    borderless: PropTypes.bool,
+    type: PropTypes.oneOf([ 'success', 'default' ]);
   };
 
   static defaultProps = {
@@ -115,7 +115,7 @@ Now render `Button` with different props:
 
 ```js
 <Button /> //button button--type-default
-<Button borderless /> //button button--borderless
+<Button borderless /> //button button--type-default button--borderless
 <Button type="success" /> //button button--type-success
 <Button type="success" disabled /> //button button--type-success is-disabled
 ```
